@@ -74,7 +74,7 @@ mkdir -p ~/vbs_ws/src
 cd ~/vbs_ws/src
 
 # Clone repository
-git clone https://github.com/Abinesh-Thankaraj/Variable_Buoyancy_System_ROS2.git .
+git clone https://github.com/Abinesh-Thankaraj/Variable_Buoyancy_System_ROS2.git
 
 # Install dependencies
 sudo apt-get install ros-humble-gazebo-ros-pkgs \
