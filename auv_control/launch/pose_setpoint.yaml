@@ -1,0 +1,15 @@
+cmd_pose:
+  type: geometry_msgs/PoseStamped
+  header.frame_id: 'world'
+  Depth (m):
+    min: -20
+    max: 0
+    to: pose.position.z
+    default: -15
+
+  Pitch (angle):
+    min: -180  # -π rad in degrees
+    max: 180   # π rad in degrees
+    to: pose.orientation.pitch
+    # Conversion from degrees to radians for internal use
+    from: value * 0.0174533  # degrees to radians (π/180)
