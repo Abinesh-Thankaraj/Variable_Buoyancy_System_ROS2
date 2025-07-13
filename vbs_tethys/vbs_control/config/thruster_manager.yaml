@@ -1,0 +1,12 @@
+/tethys/thruster_manager:
+  ros__parameters:
+    control_frame: tethys/base_link
+    publish_joint_state: true
+    tam:
+      deadzone: 1.
+      max_thrust: 10.0
+      min_thrust: 0.0
+      thruster_prefix: ''
+      thrusters: [ballast1, ballast2]  # Only these two
+      use_gz_plugin: true
+    use_sim_time: true

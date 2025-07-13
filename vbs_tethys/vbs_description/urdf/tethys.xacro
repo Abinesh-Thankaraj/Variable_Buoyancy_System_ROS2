@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<robot name="tethys" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+    
+  <xacro:arg name="namespace" default="tethys"/>
+  <!-- vbs joints are fixed if not for gazebo use -->
+  <xacro:arg name="simulation" default="true"/>
+  
+  <xacro:arg name="density" default="1025"/>
+  
+  <xacro:property name="ns" value="$(arg namespace)"/>
+  <xacro:property name="density" value="$(arg density)"/>
+
+  <!-- Main body -->    
+  <xacro:property name="x_size" value="2.3"/>
+  <xacro:property name="y_size" value="0.31"/>
+  <xacro:property name="z_size" value="0.31"/>
+
+  <xacro:property name="mass" value="110"/>
+      
+  <!-- other VBS -->
+  <xacro:property name="vbs_mass" value="0.5"/>
+  
+  <!-- to set correct buoyancy volume with 1 % positive factor -->
+  <xacro:property name="buoyant_correction" value="${1.01*pow((mass + 2*vbs_mass)/(density*x_size*y_size*z_size), 1./3)}"/>
+  <!-- Center of buoyancy -->
+  <xacro:property name="z_cob" value="${-buoyant_correction*z_size/4}"/>
+  <!-- Center of gravity -->
+  <xacro:property name="z_cog" value="${-buoyant_correction*z_size}"/>
+  
+  <xacro:property name="visual_mesh_file" value="package://vbs_description/meshes/tethys.dae"/>
+  <xacro:property name="collision_mesh_file" value="package://vbs_description/meshes/tethys.stl"/>
+
+  <!-- Vehicle base link -->
+    <link name="${ns}/base_link">
+    <inertial>
+        <mass value="${mass}"/>
+        <origin xyz="0 0 ${z_cog}"/>
+        <inertia ixx="5.2539" ixy="0.0144" ixz="0.3341" iyy="7.9420" iyz="0.026" izz="6.9123"/>
+    </inertial>
+    <visual>
+        <geometry>
+        <mesh filename="${visual_mesh_file}"/>
+        </geometry>
+    </visual>
+    
+    <collision>
+        <origin xyz="0 0 ${z_cob}"/>
+        <!-- Box adjusted for buoyancy -->
+        <geometry>
+            <box size="${x_size*buoyant_correction} ${y_size*buoyant_correction} ${z_size*buoyant_correction}"/>
+        </geometry>
+    </collision>
+    
+    </link>
+  
+<xacro:include filename="hydrodynamics.xacro"/>
+<xacro:include filename="vbs.xacro"/>
+<xacro:include filename="sensors.xacro"/>
+
+  
+<!-- other Gazebo plugins -->
+<xacro:if value="$(arg simulation)">
+    <gazebo>
+        <plugin filename="ignition-gazebo-joint-state-publisher-system" name="ignition::gazebo::systems::JointStatePublisher"/>
+        
+        <plugin
+            filename="ignition-gazebo-odometry-publisher-system"
+            name="ignition::gazebo::systems::OdometryPublisher">
+            <odom_frame>world</odom_frame>
+            <dimensions>3</dimensions>
+            <robot_base_frame>${ns}/base_link</robot_base_frame>
+            <odom_publish_frequency>20</odom_publish_frequency>
+        </plugin>
+        
+
+
+        <plugin
+            filename="ignition-gazebo-pose-publisher-system"
+            name="ignition::gazebo::systems::PosePublisher">
+            <publish_link_pose>false</publish_link_pose>
+            <publish_collision_pose>false</publish_collision_pose>
+            <publish_visual_pose>false</publish_visual_pose>
+            <publish_nested_model_pose>true</publish_nested_model_pose>
+        </plugin>
+    </gazebo>
+</xacro:if>
+
+
+</robot>

@@ -1,0 +1,28 @@
+# Ballast Control Sliders
+cmd_ballast1:
+  type: std_msgs/Float64
+  Netforce:
+    max: 40.0
+    min: -40.0
+    step: 0.5
+    topic: cmd_ballast1
+    desc: "Ballast 1 Force (N) [+=up]"
+
+cmd_ballast2:
+  type: std_msgs/Float64
+  Netforce:
+    max: 40.0
+    min: -40.0
+    step: 0.5
+    topic: cmd_ballast2
+    desc: "Ballast 2 Force (N) [+=up]"
+
+# Tilt Control (optional)
+cmd_tilt:
+  type: std_msgs/Float64
+  angle:
+    max: 1.57   # ~90 degrees
+    min: -1.57  # ~-90 degrees
+    step: 0.01
+    topic: cmd_tilt
+    desc: "Camera Tilt (rad)"

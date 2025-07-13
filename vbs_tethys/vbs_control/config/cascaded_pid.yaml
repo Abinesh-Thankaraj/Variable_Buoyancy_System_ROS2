@@ -1,0 +1,74 @@
+/tethys/cascaded_pid:
+  ros__parameters:
+    use_hydro: true
+    align_thr: 0.0
+    control_frame: tethys/base_link
+    control_period_ms: 10  # Faster control loop
+    
+    # PITCH CONTROL
+    pitch:
+      Kd: 0.0
+      Ki: 0.5
+      Kp: 2.0
+      Kv: 1.0
+      u_sat: 20.0
+      use_position: true
+      v_sat: .inf
+    
+    # DISABLED AXES
+    roll:
+      Kp: 0.0
+      Ki: 0.0
+      Kv: 0.0
+    x:
+      Kp: 0.0
+      Ki: 0.0
+      Kv: 0.0
+    y:
+      Kp: 0.0
+      Ki: 0.0
+      Kv: 0.0
+    yaw:
+      Kp: 0.0
+      Ki: 0.0
+      Kv: 0.0
+    
+    # Z-CONTROL (OPTIMIZED FOR NO OVERSHOOT)
+    z:
+      Kd: 35.0           # Strong braking
+      Ki: 0.1            # Small integral
+      Kp: 12.0           # Moderate proportional
+      Kv: 0.4            # Conservative velocity
+      u_sat: 10.0        # Limited thrust
+      use_position: true
+      v_sat: 0.1         # Max descent speed (10cm/s)
+      braking_zone: 3.0   # Start slowing at -12m
+      min_speed: 0.01    # Minimum speed (1cm/s)
+      deadband: 0.02      # 2cm tolerance
+    
+    # THRUSTER ALLOCATION
+    tam:
+      continuity: 100.0
+      deadzone: 0.5
+      max_thrust: 10.0
+      min_thrust: 0.0
+      thruster_prefix: ''
+      thrusters: [ballast1, ballast2]
+      mapping:
+        z: [0.7, 0.7]    # Balanced thrust
+        pitch: [1.0, -1.0] # Differential pitch
+      use_gz_plugin: true
+    
+    publish_joint_state: true
+    use_sim_time: true
+    qos_overrides:
+      /parameter_events:
+        history: keep_last
+        depth: 1000
+        reliability: reliable
+        durability: volatile
+      /tf:
+        history: keep_last
+        depth: 100
+        reliability: reliable
+        durability: volatile

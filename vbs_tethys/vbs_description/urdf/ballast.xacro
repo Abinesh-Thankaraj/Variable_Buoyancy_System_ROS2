@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="vbs_mesh" value="package://vbs_description/meshes/ballast_tank.dae"/>
+  <xacro:property name="vbs_r" value="0.08"/>
+  <xacro:property name="vbs_l" value="0.08"/>
+  
+  <!-- ballast macro: joint + link + plugin -->
+  <xacro:macro name="ballast" params="ballast_id *origin">
+
+    <link name="${ns}/ballast${ballast_id}">
+      <visual>
+        <geometry>
+          <mesh filename="${vbs_mesh}"/>
+        </geometry>
+      </visual>
+
+     <inertial>
+      <!-- ballast axis is X -->
+      <origin xyz="${vbs_l/2} 0 0" rpy="0 0 0" />
+      <mass value="${vbs_mass}" />
+      <inertia  izz="${vbs_mass*vbs_r*vbs_r / 4 + vbs_mass*vbs_l*vbs_l / 12}" ixy="0.0" ixz="0.0"
+                iyy="${vbs_mass*vbs_r*vbs_r / 4 + vbs_mass*vbs_l*vbs_l / 12}" iyz="0.0"
+                ixx="${vbs_mass*vbs_r*vbs_r / 2}" />
+    </inertial>
+    </link>
+
+    <!-- Joint between ballast link and vehicle base link -->    
+    <joint name="ballast${ballast_id}" type="fixed">
+      <xacro:insert_block name="origin" />
+      <parent link="${ns}/base_link" />
+      <child link="${ns}/ballast${ballast_id}" />
+    </joint>
+
+    <gazebo>
+        <plugin
+            filename="libBuoyantForceSystem.so"
+            name="buoyant_force::BuoyantForceSystem">
+            <topic>ballast${ballast_id}/cmd</topic>
+            <min_force>-40</min_force>
+            <max_force>40</max_force>
+            <local_offset>${vbs_l/2} 0 0</local_offset>
+        </plugin>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- VBS tanks (1 and 2) -->
+  <xacro:ballast ballast_id="2">
+    <origin xyz="${0.7*buoyant_correction} 0 ${z_cob}" rpy="0 1.5707963268 0"/>
+  </xacro:ballast>
+  
+  <xacro:ballast ballast_id="1">
+    <origin xyz="${-0.7*buoyant_correction} 0 ${z_cob}" rpy="0 -1.5707963268 0"/>
+  </xacro:ballast>
+
+</robot>

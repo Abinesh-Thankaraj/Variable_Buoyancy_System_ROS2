@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Properties -->
+  <xacro:property name="vbs_r" value="0.13"/>
+  <xacro:property name="vbs_l" value="0.13"/>
+  
+  <!-- Ballast macro: joint + link + plugin -->
+  <xacro:macro name="ballast" params="ballast_id *origin">
+
+    <!-- Link definition -->
+    <link name="${ns}/ballast${ballast_id}">
+      <visual>
+        <geometry>
+          <xacro:if value="${ballast_id == 1}">
+            <sphere radius="${vbs_r}"/>
+          </xacro:if>
+          <xacro:if value="${ballast_id == 2}">
+            <sphere radius="${vbs_r}"/>
+          </xacro:if>
+        </geometry>
+        <material name="blue">
+          <color rgba="0 0 0.8 1"/>
+        </material>
+      </visual>
+
+      <inertial>
+        <!-- Ballast axis is X -->
+        <origin xyz="${vbs_l/2} 0 0" rpy="0 0 0" />
+        <mass value="${vbs_mass}" />
+        <inertia 
+          izz="${vbs_mass*vbs_r*vbs_r / 4 + vbs_mass*vbs_l*vbs_l / 12}" 
+          ixy="0.0" 
+          ixz="0.0"
+          iyy="${vbs_mass*vbs_r*vbs_r / 4 + vbs_mass*vbs_l*vbs_l / 12}" 
+          iyz="0.0"
+          ixx="${vbs_mass*vbs_r*vbs_r / 2}" 
+        />
+      </inertial>
+    </link>
+
+    <!-- Joint between ballast link and vehicle base link -->    
+    <joint name="ballast${ballast_id}" type="continuous">
+      <xacro:insert_block name="origin" />
+      <xacro:if value="${ballast_id == 1}">
+        <axis xyz="-1 0 0" />
+      </xacro:if>
+      <xacro:if value="${ballast_id == 2}">
+        <axis xyz="1 0 0" />
+      </xacro:if>
+      <parent link="${ns}/base_link" />
+      <child link="${ns}/ballast${ballast_id}" />
+      <limits effort="-1" velocity="-1"/>
+    </joint>
+
+    <!-- Gazebo plugin configuration -->
+    <gazebo>
+      <plugin
+        filename="ignition-gazebo-thruster-system"
+        name="ignition::gazebo::systems::Thruster">
+        <namespace>${ns}</namespace>
+        <joint_name>ballast${ballast_id}</joint_name>
+        <topic>ballast${ballast_id}/cmd</topic>
+        <thrust_coefficient>0.925</thrust_coefficient>
+        <fluid_density>${density}</fluid_density>
+        <propeller_diameter>${2*vbs_r}</propeller_diameter>
+        <velocity_control>true</velocity_control>
+        <use_angvel_cmd>false</use_angvel_cmd>
+        <max_thrust_cmd>10</max_thrust_cmd>
+        <min_thrust_cmd>0</min_thrust_cmd>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- Ballast instances -->
+  <xacro:ballast ballast_id="2">
+    <origin 
+      xyz="${0.7*buoyant_correction} 0 ${z_cob + 0.05}" 
+      rpy="0 1.5707963268 0"/>
+  </xacro:ballast>
+  
+  <xacro:ballast ballast_id="1">
+    <origin 
+      xyz="${-0.7*buoyant_correction} 0 ${z_cob + 0.05}" 
+      rpy="0 -1.5707963268 0"/>
+  </xacro:ballast>
+
+</robot>

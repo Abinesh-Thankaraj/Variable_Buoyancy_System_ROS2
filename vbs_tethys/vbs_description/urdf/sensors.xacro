@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="PI" value="3.1415927"/>
+
+  <!-- ========== IMU Sensor ========== -->
+  <xacro:macro name="imu" params="name *origin">
+    <link name="${ns}/${name}"/>
+    <gazebo reference="${ns}/${name}">
+      <sensor name="${name}_imu" type="imu">
+        <always_on>1</always_on>
+        <update_rate>10</update_rate>
+        <visualize>true</visualize>
+        <topic>${ns}/${name}</topic>
+        <gz_frame_id>${ns}/${name}</gz_frame_id>
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.009</stddev>
+                <bias_mean>0.00075</bias_mean>
+                <bias_stddev>0.005</bias_stddev>
+                <dynamic_bias_stddev>0.00002</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>400.0</dynamic_bias_correlation_time>
+                <precision>0.00025</precision>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.009</stddev>
+                <bias_mean>0.00075</bias_mean>
+                <bias_stddev>0.005</bias_stddev>
+                <dynamic_bias_stddev>0.00002</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>400.0</dynamic_bias_correlation_time>
+                <precision>0.00025</precision>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.009</stddev>
+                <bias_mean>0.00075</bias_mean>
+                <bias_stddev>0.005</bias_stddev>
+                <dynamic_bias_stddev>0.00002</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>400.0</dynamic_bias_correlation_time>
+                <precision>0.00025</precision>
+              </noise>
+            </z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.021</stddev>
+                <bias_mean>0.05</bias_mean>
+                <bias_stddev>0.0075</bias_stddev>
+                <dynamic_bias_stddev>0.000375</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>175.0</dynamic_bias_correlation_time>
+                <precision>0.005</precision>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.021</stddev>
+                <bias_mean>0.05</bias_mean>
+                <bias_stddev>0.0075</bias_stddev>
+                <dynamic_bias_stddev>0.000375</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>175.0</dynamic_bias_correlation_time>
+                <precision>0.005</precision>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.021</stddev>
+                <bias_mean>0.05</bias_mean>
+                <bias_stddev>0.0075</bias_stddev>
+                <dynamic_bias_stddev>0.000375</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>175.0</dynamic_bias_correlation_time>
+                <precision>0.005</precision>
+              </noise>
+            </z>
+          </linear_acceleration>
+          <orientation_reference_frame>
+            <localization>ENU</localization>
+          </orientation_reference_frame>
+        </imu>
+      </sensor>
+    </gazebo>
+    <joint name="${name}_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${ns}/base_link"/>
+      <child link="${ns}/${name}"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Add IMUs to base_link -->
+  <xacro:imu name="mpu">
+    <origin xyz="0.1 0 0" rpy="0 0 ${-PI/2}"/>
+  </xacro:imu>
+
+  <xacro:imu name="lsm">
+    <origin xyz="0.1 0 0" rpy="0 0 ${-PI/2}"/>
+  </xacro:imu>
+
+<!-- ========== Pressure (Baro) Sensor ========== -->
+<xacro:macro name="pressure_sensor" params="name *origin">
+  <link name="${ns}/${name}"/>
+  <gazebo reference="${ns}/${name}">
+    <sensor name="${name}_pressure" type="altimeter">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <topic>${ns}/baro</topic>  <!-- Fixed topic name -->
+      <gz_frame_id>${ns}/${name}</gz_frame_id>
+      <altimeter>
+        <vertical_position>
+          <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>0.1</stddev>
+            <bias_mean>0.0</bias_mean>
+            <bias_stddev>0.0</bias_stddev>
+          </noise>
+        </vertical_position>
+        <vertical_velocity>
+          <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+            <bias_mean>0.0</bias_mean>
+            <bias_stddev>0.0</bias_stddev>
+          </noise>
+        </vertical_velocity>
+      </altimeter>
+    </sensor>
+  </gazebo>
+  <joint name="${name}_joint" type="fixed">
+    <xacro:insert_block name="origin"/>
+    <parent link="${ns}/base_link"/>
+    <child link="${ns}/${name}"/>
+  </joint>
+</xacro:macro>
+
+  <!-- Add Pressure Sensor to base_link -->
+  <xacro:pressure_sensor name="baro">
+    <origin xyz="0 0 -0.01" rpy="0 0 0"/>
+  </xacro:pressure_sensor>
+
+</robot>

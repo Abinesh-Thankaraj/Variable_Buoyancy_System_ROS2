@@ -1,0 +1,13 @@
+cmd_ballast1:
+  type: std_msgs/Float64
+  Mass_add (kg):
+    min: 0
+    max: 10
+    to: data
+
+cmd_ballast2:
+  type: std_msgs/Float64
+  Mass_add (kg):
+    min: 0
+    max: 10
+    to: data

@@ -1,0 +1,42 @@
+<?xml version='1.0' ?>
+<sdf version="1.6">
+    <model name="coast_waves">
+        <static>true</static>
+        <link name="link">
+            <visual name="visual">
+                <geometry>
+                    <mesh>
+                        <uri>meshes/waterlow.dae</uri>
+                    </mesh>
+                </geometry>
+                <material>
+                    <!-- Basic water material properties -->
+                    <ambient>0.0 0.1 0.2 1.0</ambient>
+                    <diffuse>0.0 0.1 0.2 0.8</diffuse>
+                    <specular>0.8 0.8 1.0 1.0</specular>
+                    <emissive>0.0 0.0 0.0 1.0</emissive>
+                    <shininess>100</shininess>
+                    
+                    <!-- Normal map for wave effects -->
+                    <normal_map>materials/textures/wave_normals.dds</normal_map>
+                    
+                    <!-- Environment map for reflections -->
+                    <environment_map>materials/textures/skybox_lowres.dds</environment_map>
+                    
+                    <!-- Custom shader scripts (optional) -->
+                    <shader type="vertex">
+                        <shader_script>materials/programs/water_vs.glsl</shader_script>
+                    </shader>
+                    <shader type="fragment">
+                        <shader_script>materials/programs/water_fs.glsl</shader_script>
+                    </shader>
+                    
+                    <!-- Wave parameters -->
+                    <parameter name="wave_speed" type="float">0.1</parameter>
+                    <parameter name="wave_height" type="float">0.3</parameter>
+                    <parameter name="water_color" type="float_array">0.0 0.1 0.2 0.8</parameter>
+                </material>
+            </visual>
+        </link>
+    </model>
+</sdf>
