@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>slider_publisher</name>
+  <version>2.4.1</version>
+  <description>Slider-based publisher</description>
+
+  <maintainer email="abineshthankaraj2004@gmail.com">Abinesh Thankaraj</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>rqt_gui_py</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
+
