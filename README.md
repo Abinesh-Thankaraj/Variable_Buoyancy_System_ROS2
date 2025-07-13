@@ -27,7 +27,7 @@ A modified **Tethys AUV model** is used for realistic underwater behavior and co
 - Simulation using Ignition Gazebo Fortress (v6.17.0)
 - Built with ROS 2 Humble middleware
 - Modular and scalable ROS 2 package structure
-- Real-time visualization in RViz and Ignition GUI
+- Real-time visualization in RViz2 and Ignition GUI
 - Includes demonstration videos
 
 ---
@@ -37,7 +37,7 @@ A modified **Tethys AUV model** is used for realistic underwater behavior and co
 - **ROS 2**: Humble Hawksbill
 - **Simulation**: Ignition Gazebo Fortress (v6.17.0)
 - **Languages**: Python, C++
-- **Visualization**: RViz, Ignition GUI
+- **Visualization**: RViz2, Ignition GUI
 
 ---
 
@@ -74,7 +74,7 @@ mkdir -p ~/vbs_ws/src
 cd ~/vbs_ws/src
 
 # Clone repository
-git clone <repository_url> .
+git clone https://github.com/Abinesh-Thankaraj/Variable_Buoyancy_System_ROS2.git .
 
 # Install dependencies
 sudo apt-get install ros-humble-gazebo-ros-pkgs \
