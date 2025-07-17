@@ -223,7 +223,7 @@ Eigen::VectorXd ControllerIO::computeThrusts() {
   }
 
   // ========== CRITICAL: CLAMP CONTROL OUTPUTS ==========
-  // Z force (heave): ±20N (2 thrusters × 10N each)
+  // Z force (heave): ±20N (2 ballast × 10N each)
   wrench[2] = std::clamp(wrench[2], -20.0, 0.0);
   
   // Pitch torque: ±14Nm (0.7m moment arm × 10N × 2 thrusters)
